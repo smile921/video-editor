@@ -1,0 +1,34 @@
+{% extends "video/base.html" %}
+
+{% block title %}{{ content.title }} - Video{% endblock %}
+
+{% block header %}
+{% load static %}
+  <script src="{% static 'video/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'video/watch.js' %}"></script>
+{% endblock %}
+
+{% block main %}
+
+<h2>{{ content.title }}</h2>
+{{ content.description }}
+
+<hr>
+
+<video id="video_content" src="/media/video/{{ content.id }}/{{ content.filename}}" poster="/media/video/{{ content.id }}/thumb.jpg" controls>
+  動画の再生にはHTML5が必要です。
+</video>
+<br>
+タグ:
+{% for tag in tags %}
+  <a href="{% url 'video:tag' tag.tag.name %}">「{{ tag.tag.name }}」</a>
+{% endfor %}
+
+<hr>
+
+<br>
+  <a class="light_button" href="javascript:history.back()">戻る</a>
+<br>
+<br>
+<br>
+{% endblock %}

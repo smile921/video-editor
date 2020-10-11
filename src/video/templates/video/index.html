@@ -1,0 +1,76 @@
+{% extends "video/base.html" %}
+
+{% block main %}
+
+<div class="left">
+  <p>関連タグ</p>
+  <ul class="taglist">
+  {% for item in tags %}
+    <li><a href="{% url 'video:tag' item.name %}">{{ item.name }}</a> ({{ item.count }})</li>
+  {% endfor %}
+  </ul>
+</div>
+
+
+<div class="center">
+  <form action="{% url 'video:search' %}" method="post">
+    {% csrf_token %}
+    <input name="search_text" type="text" size="60" value="">
+    <input class="light_button" type="submit" value="検索">
+  </form>
+  <br>
+  {% for item in contents %}
+    <div class="content">
+      <a href="{% url 'video:watch' item.id %}"><img src="/media/video/{{ item.id }}/thumb.jpg"></a>
+      <div class="detail">
+        <h3><a href="{% url 'video:watch' item.id %}">{{ item.title }}</a></h3>
+        <p class="description">{{ item.description }}</p>
+        {% for tag in item.tags %}
+          <a href="{% url 'video:tag' tag.tag.name %}">「{{ tag.tag.name }}」</a>
+        {% endfor %}
+        <br>
+        <a href="{% url 'video:edit' item.id %}">編集</a>
+      </div>
+    </div>
+    {% endfor %}
+  <br>
+
+  <div class="upload_button">
+    <h2>
+      <a class="block_button" href="{% url 'video:upload' %}">アップロード</a>
+    </h2>
+  </div>
+
+  {% if page.word != '' %}
+    <a href="{% url page.type page.word 0 %}">最初</a>/
+  {% else %}
+    <a href="{% url page.type 0 %}">最初</a>/
+  {% endif %}
+
+  {% for item in page.list %}
+    {% if item.valid %}
+      {% if item.num == page.current %}
+        <b>{{ page.current }}</b>/
+      {% else %}
+        {% if page.word != '' %}
+          <a href="{% url page.type page.word item.num %}">{{ item.num }}</a>/
+        {% else %}
+          <a href="{% url page.type item.num %}">{{ item.num }}</a>/
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if page.word != '' %}
+    <a href="{% url page.type page.word page.max %}">最後</a><br>
+  {% else %}
+     <a href="{% url page.type page.max %}">最後</a><br>
+  {% endif %}
+  <br>
+  <a class="light_button" href="javascript:history.back()">戻る</a>
+  <br>
+  <br>
+</div>
+
+
+{% endblock %}
